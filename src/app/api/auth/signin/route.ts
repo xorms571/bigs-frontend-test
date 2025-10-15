@@ -30,14 +30,14 @@ export async function POST(request: Request) {
         secure: process.env.NODE_ENV === 'production',
         path: '/',
         sameSite: 'strict',
-        maxAge: 60, // 1분
+        maxAge: 60 * 60, // 1 hour
       });
       response.cookies.set('refreshToken', data.refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         path: '/',
         sameSite: 'strict',
-        maxAge: 60 * 5, // 5분
+        maxAge: 60 * 60 * 24 * 7, // 7 days
       });
     }
 
