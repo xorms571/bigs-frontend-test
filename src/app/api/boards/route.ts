@@ -65,13 +65,32 @@ export async function POST(request: NextRequest) {
       body: newFormData,
     });
 
-    const data = await apiResponse.json();
+    console.log('External API POST /boards raw response status:', apiResponse.status);
+    const responseText = await apiResponse.text();
+    console.log('External API POST /boards raw response text:', responseText);
 
     if (!apiResponse.ok) {
-      return NextResponse.json({ message: data.message || '글 작성에 실패했습니다.' }, { status: apiResponse.status });
+      let errorData = { message: '글 작성에 실패했습니다.' };
+      try {
+        errorData = JSON.parse(responseText);
+      } catch (e) {
+        console.error('Failed to parse error response as JSON:', e);
+        errorData.message = responseText || '글 작성에 실패했습니다.';
+      }
+      return NextResponse.json({ message: errorData.message }, { status: apiResponse.status });
     }
 
-    return NextResponse.json(data, { status: apiResponse.status });
+    if (!responseText) {
+        return new NextResponse(null, { status: apiResponse.status });
+    }
+
+    try {
+        const data = JSON.parse(responseText);
+        return NextResponse.json(data, { status: apiResponse.status });
+    } catch (e) {
+        console.error('Failed to parse successful response as JSON:', e);
+        return new NextResponse(responseText, { status: apiResponse.status });
+    }
 
   } catch (error) {
     console.error(error);

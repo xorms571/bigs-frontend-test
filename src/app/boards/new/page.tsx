@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 interface Category {
-  id: number;
+  id: string;
   name: string;
 }
 
@@ -20,15 +20,16 @@ export default function NewBoardPage() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch('/api/boards/categories');
-        if (!res.ok) {
+        const catRes = await fetch('/api/boards/categories');
+        if (!catRes.ok) {
           throw new Error('카테고리를 불러오는 데 실패했습니다.');
         }
-        const data = await res.json();
-        setCategories(data.content);
-        if (data.content.length > 0) {
-          setCategory(data.content[0].name);
-        }
+        const catData = await catRes.json();
+        const categoriesArray = Object.entries(catData).map(([id, name]) => ({
+          id: id,
+          name: name as string,
+        }));
+        setCategories(categoriesArray);
       } catch (err: any) {
         setError(err.message);
       }
@@ -89,7 +90,7 @@ export default function NewBoardPage() {
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
           >
             {categories.map((cat) => (
-              <option key={cat.id} value={cat.name}>
+              <option key={cat.id} value={cat.id}>
                 {cat.name}
               </option>
             ))}
