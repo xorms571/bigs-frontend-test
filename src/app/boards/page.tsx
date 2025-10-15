@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useUserStore } from '@/app/store/userStore'; // Import useUserStore
 
 interface Board {
   id: number;
@@ -10,12 +11,6 @@ interface Board {
   content: string;
   category: string;
   createdAt: string;
-  updatedAt: string;
-  writer: {
-    id: number;
-    username: string;
-    name: string;
-  };
 }
 
 interface Page {
@@ -50,6 +45,7 @@ interface Page {
 export default function BoardsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { accessToken } = useUserStore();
   const [boardsPage, setBoardsPage] = useState<Page | null>(null);
   const [error, setError] = useState('');
 
@@ -57,6 +53,11 @@ export default function BoardsPage() {
   const size = searchParams.get('size') ?? '10';
 
   useEffect(() => {
+    if (!accessToken) {
+      router.push('/login');
+      return;
+    }
+
     const fetchBoards = async () => {
       try {
         const res = await fetch(`/api/boards?page=${page}&size=${size}`);
@@ -71,7 +72,7 @@ export default function BoardsPage() {
     };
 
     fetchBoards();
-  }, [page, size]);
+  }, [page, size, accessToken, router]);
 
   const handlePageChange = (newPage: number) => {
     router.push(`/boards?page=${newPage}&size=${size}`);
@@ -80,7 +81,7 @@ export default function BoardsPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">게시판</h1>
-      
+
       <div className="flex justify-end mb-4">
         <Link href="/boards/new" className="px-4 py-2 font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700">
           글쓰기
@@ -88,7 +89,7 @@ export default function BoardsPage() {
       </div>
 
       {error && <p className="text-red-600">{error}</p>}
-      
+
       <div className="bg-white shadow-md rounded-lg">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
@@ -116,26 +117,25 @@ export default function BoardsPage() {
         </table>
       </div>
 
-      {boardsPage && (
-        <div className="flex items-center justify-between mt-6">
-          <button
-            onClick={() => handlePageChange(boardsPage.number - 1)}
-            disabled={boardsPage.first}
-            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            이전
-          </button>
-          <span className="text-sm text-gray-700">
-            Page {boardsPage.number + 1} of {boardsPage.totalPages}
-          </span>
-          <button
-            onClick={() => handlePageChange(boardsPage.number + 1)}
-            disabled={boardsPage.last}
-            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            다음
-          </button>
-        </div>
+      {boardsPage && (<div className="flex items-center justify-between mt-6">
+        <button
+          onClick={() => handlePageChange(boardsPage.number - 1)}
+          disabled={boardsPage.first}
+          className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          이전
+        </button>
+        <span className="text-sm text-gray-700">
+          Page {boardsPage.number + 1} of {boardsPage.totalPages}
+        </span>
+        <button
+          onClick={() => handlePageChange(boardsPage.number + 1)}
+          disabled={boardsPage.last}
+          className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          다음
+        </button>
+      </div>
       )}
     </div>
   );
