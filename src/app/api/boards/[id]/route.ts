@@ -5,7 +5,7 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     if (!id) {
       return NextResponse.json({ message: '게시글 ID가 필요합니다.' }, { status: 400 });
@@ -42,7 +42,7 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     if (!id) {
       return NextResponse.json({ message: '게시글 ID가 필요합니다.' }, { status: 400 });
@@ -80,7 +80,7 @@ export async function PATCH(
 
     if (!apiResponse.ok) {
         const errorData = await apiResponse.json();
-        return NextResponse.json({ message: errorData.message || '글 수정에 실패했습니다.' }, { status: apiResponse.status });
+        throw new Error(errorData.message || '글 수정에 실패했습니다.');
     }
 
     const text = await apiResponse.text();
@@ -106,7 +106,7 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     if (!id) {
       return NextResponse.json({ message: '게시글 ID가 필요합니다.' }, { status: 400 });

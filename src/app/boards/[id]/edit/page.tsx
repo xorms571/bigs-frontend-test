@@ -12,7 +12,7 @@ interface Board {
   id: number;
   title: string;
   content: string;
-  category: string;
+  boardCategory: string;
 }
 
 export default function EditBoardPage() {
@@ -31,18 +31,6 @@ export default function EditBoardPage() {
   useEffect(() => {
     const fetchBoardAndCategories = async () => {
       try {
-        // Fetch Board Data
-        const boardRes = await fetch(`/api/boards/${id}`);
-        if (!boardRes.ok) {
-          throw new Error('게시글 정보를 불러오는 데 실패했습니다.');
-        }
-        const boardData = await boardRes.json();
-        setBoard(boardData);
-        setTitle(boardData.title);
-        setContent(boardData.content);
-        setCategory(boardData.category);
-
-        // Fetch Categories
         const catRes = await fetch('/api/boards/categories');
         if (!catRes.ok) {
           throw new Error('카테고리를 불러오는 데 실패했습니다.');
@@ -53,6 +41,25 @@ export default function EditBoardPage() {
           name: name as string,
         }));
         setCategories(categoriesArray);
+
+        const boardRes = await fetch(`/api/boards/${id}`);
+        if (!boardRes.ok) {
+          throw new Error('게시글 정보를 불러오는 데 실패했습니다.');
+        }
+        const boardData = await boardRes.json();
+        setBoard(boardData);
+        setTitle(boardData.title);
+        setContent(boardData.content);
+
+        const initialCategory = categoriesArray.find(
+          (cat) => cat.name === boardData.boardCategory
+        );
+        if (initialCategory) {
+          setCategory(initialCategory.id);
+        } else {
+          setError('게시글의 카테고리를 찾을 수 없습니다.');
+          setCategory('');
+        }
 
       } catch (err: any) {
         setError(err.message);
