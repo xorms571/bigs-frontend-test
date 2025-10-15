@@ -2,16 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import { Board } from '../../types/common'
 import Link from 'next/link';
-
-interface Board {
-  id: number;
-  title: string;
-  content: string;
-  category: string;
-  createdAt: string;
-  imageUrl: string | null;
-}
 
 const EXTERNAL_API_BASE_URL = process.env.NEXT_PUBLIC_EXTERNAL_API_BASE_URL;
 
@@ -86,7 +78,7 @@ export default function BoardDetailPage() {
             <p className="text-sm text-gray-500">작성일: {new Date(board.createdAt).toLocaleString()}</p>
           </div>
         </div>
-        
+
         <hr className="my-6" />
 
         {fullImageUrl && (

@@ -35,7 +35,7 @@ export default function Header() {
   }
 
   return (
-    <header className="bg-white shadow-md">
+    <header className="bg-white shadow-md fixed w-full">
       <nav className="mx-auto px-6 py-3 flex justify-between items-center">
         <Link href="/" className="text-xl font-bold text-gray-800">
           Home

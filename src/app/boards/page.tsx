@@ -4,43 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useUserStore } from '@/app/store/userStore';
-
-interface Board {
-  id: number;
-  title: string;
-  content: string;
-  category: string;
-  createdAt: string;
-}
-
-interface Page {
-  content: Board[];
-  pageable: {
-    pageNumber: number;
-    pageSize: number;
-    sort: {
-      empty: boolean;
-      sorted: boolean;
-      unsorted: boolean;
-    };
-    offset: number;
-    paged: boolean;
-    unpaged: boolean;
-  };
-  last: boolean;
-  totalPages: number;
-  totalElements: number;
-  size: number;
-  number: number;
-  sort: {
-    empty: boolean;
-    sorted: boolean;
-    unsorted: boolean;
-  };
-  first: boolean;
-  numberOfElements: number;
-  empty: boolean;
-}
+import { Page } from '../types/common';
 
 export default function BoardsPage() {
   const router = useRouter();

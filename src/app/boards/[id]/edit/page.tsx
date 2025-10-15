@@ -2,11 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-
-interface Category {
-  id: string;
-  name: string;
-}
+import { Category } from '../../../types/common'
 
 interface Board {
   id: number;

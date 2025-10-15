@@ -2,11 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-
-interface Category {
-  id: string;
-  name: string;
-}
+import { Category } from '../../types/common';
 
 const MAX_FILE_SIZE = 1024 * 1024; // 1MB
 

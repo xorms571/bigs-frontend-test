@@ -1,10 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-
-interface User {
-  username: string;
-  name: string;
-}
+import { User } from '../types/common';
 
 interface UserState {
   user: User | null;
