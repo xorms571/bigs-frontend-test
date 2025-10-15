@@ -28,15 +28,21 @@ export async function POST(request: Request) {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email: username, password, name }),
+      body: JSON.stringify({ username, password, name }),
     });
 
-    const data = await response.json();
-
     if (!response.ok) {
-      return NextResponse.json({ message: data.message || '문제가 발생했습니다.' }, { status: response.status });
+      const errorText = await response.text();
+      let errorData;
+      try {
+        errorData = JSON.parse(errorText);
+      } catch (e) {
+        return NextResponse.json({ message: `외부 API 에러: ${errorText}` }, { status: response.status });
+      }
+      return NextResponse.json({ message: errorData.message || '문제가 발생했습니다.' }, { status: response.status });
     }
 
+    const data = await response.json();
     return NextResponse.json(data, { status: response.status });
   } catch (error) {
     return NextResponse.json({ message: '예상치 못한 오류가 발생했습니다.' }, { status: 500 });
