@@ -25,16 +25,13 @@ export const useUserStore = create<UserState>()(
       accessToken: null,
       setUser: (user, accessToken) => {
         set({ user, accessToken });
-        console.log('setUser 호출됨, 리프레시 타이머 시작 시도.');
         get().startRefreshTokenTimer();
       },
       clearUser: () => {
         set({ user: null, accessToken: null });
-        console.log('clearUser 호출됨, 리프레시 타이머 중지 시도.');
         get().stopRefreshTokenTimer();
       },
       refreshAccessToken: async () => {
-        console.log('refreshAccessToken 호출됨.');
         try {
           const response = await fetch('/api/auth/refresh', {
             method: 'POST',
@@ -44,11 +41,9 @@ export const useUserStore = create<UserState>()(
           });
 
           if (response.ok) {
-            const data = await response.json();
-            console.log('쿠키를 통해 액세스 토큰이 성공적으로 갱신되었습니다.');
+            // 쿠키를 통해 액세스 토큰이 성공적으로 갱신되었습니다.
           } else {
             // 갱신 실패 시, 사용자 데이터 지우기 (로그아웃)
-            console.error('액세스 토큰 갱신에 실패했습니다. 로그아웃합니다. 상태 코드:', response.status);
             get().clearUser();
           }
         } catch (error) {
@@ -59,22 +54,17 @@ export const useUserStore = create<UserState>()(
       startRefreshTokenTimer: () => {
         if (refreshTokenTimer) {
           clearInterval(refreshTokenTimer);
-          console.log('기존 리프레시 타이머 중지됨.');
         }
-        // 테스트를 위해 50초마다 토큰 갱신
+        // 프로덕션 환경에서는 55분마다 토큰 갱신 (액세스 토큰 만료 1시간 전)
         refreshTokenTimer = setInterval(() => {
-          console.log('리프레시 타이머 틱: refreshAccessToken 호출.');
           get().refreshAccessToken();
-        }, 50 * 1000); // 50초
-        console.log('리프레시 토큰 타이머가 시작되었습니다.');
+        }, 55 * 60 * 1000); // 55분
       },
       stopRefreshTokenTimer: () => {
         if (refreshTokenTimer) {
           clearInterval(refreshTokenTimer);
           refreshTokenTimer = null;
-          console.log('리프레시 타이머 중지됨.');
         }
-        console.log('리프레시 토큰 타이머가 중지되었습니다.');
       },
     }),
     {
@@ -82,9 +72,7 @@ export const useUserStore = create<UserState>()(
       storage: createJSONStorage(() => localStorage),
       onRehydrateStorage: (state) => {
         // 스토어가 다시 로드될 때, 사용자가 존재하면 타이머를 다시 시작합니다.
-        console.log('onRehydrateStorage 호출됨.');
         if (state?.accessToken) {
-          console.log('accessToken 존재, 리프레시 타이머 재시작 시도.');
           state.startRefreshTokenTimer();
         }
       },

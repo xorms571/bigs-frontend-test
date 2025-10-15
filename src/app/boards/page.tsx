@@ -79,9 +79,7 @@ export default function BoardsPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">게시판</h1>
-
+    <div className="w-full">
       <div className="flex justify-end mb-4">
         <Link href="/boards/new" className="px-4 py-2 font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700">
           글쓰기

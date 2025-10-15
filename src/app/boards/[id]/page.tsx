@@ -75,7 +75,7 @@ export default function BoardDetailPage() {
   const fullImageUrl = board.imageUrl ? `${EXTERNAL_API_BASE_URL}${board.imageUrl}` : null;
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="w-full">
       <div className="bg-white shadow-md rounded-lg p-8">
         <div className="flex justify-between items-start mb-4">
           <div>
