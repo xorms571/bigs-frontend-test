@@ -13,7 +13,7 @@ interface Board {
   imageUrl: string | null;
 }
 
-const EXTERNAL_API_BASE_URL = 'https://front-mission.bigs.or.kr';
+const EXTERNAL_API_BASE_URL = process.env.NEXT_PUBLIC_EXTERNAL_API_BASE_URL;
 
 export default function BoardDetailPage() {
   const router = useRouter();
