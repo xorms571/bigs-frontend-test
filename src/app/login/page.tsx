@@ -2,12 +2,14 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useUserStore } from '../store/userStore';
 
 export default function LoginPage() {
   const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const setUser = useUserStore((state) => state.setUser);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,6 +33,12 @@ export default function LoginPage() {
         const data = await res.json();
         setError(data.message || '로그인에 실패했습니다.');
         return;
+      }
+      
+      const data = await res.json();
+      
+      if (data.user && data.accessToken) {
+        setUser(data.user, data.accessToken);
       }
 
       router.push('/');
