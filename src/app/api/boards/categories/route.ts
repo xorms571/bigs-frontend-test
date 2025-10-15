@@ -2,7 +2,17 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
   try {
-    const apiResponse = await fetch('https://front-mission.bigs.or.kr/boards/categories');
+    const accessToken = request.cookies.get('accessToken')?.value;
+
+    if (!accessToken) {
+      return NextResponse.json({ message: '인증되지 않은 사용자입니다.' }, { status: 401 });
+    }
+
+    const apiResponse = await fetch('https://front-mission.bigs.or.kr/boards/categories', {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+      },
+    });
 
     if (!apiResponse.ok) {
       const errorData = await apiResponse.json();

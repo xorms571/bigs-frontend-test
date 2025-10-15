@@ -85,11 +85,7 @@ export default function BoardDetailPage() {
             <h1 className="text-3xl font-bold">{board.title}</h1>
           </div>
           <div className="text-right">
-            <p className="text-sm text-gray-600">작성자: {board.writer.name}</p>
             <p className="text-sm text-gray-500">작성일: {new Date(board.createdAt).toLocaleString()}</p>
-            {board.createdAt !== board.updatedAt && (
-              <p className="text-sm text-gray-500">수정일: {new Date(board.updatedAt).toLocaleString()}</p>
-            )}
           </div>
         </div>
         

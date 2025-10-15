@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 
 interface Category {
-  id: number;
+  id: string;
   name: string;
 }
 
@@ -48,7 +48,11 @@ export default function EditBoardPage() {
           throw new Error('카테고리를 불러오는 데 실패했습니다.');
         }
         const catData = await catRes.json();
-        setCategories(catData.content);
+        const categoriesArray = Object.entries(catData).map(([id, name]) => ({
+          id: id,
+          name: name as string,
+        }));
+        setCategories(categoriesArray);
 
       } catch (err: any) {
         setError(err.message);
@@ -115,7 +119,7 @@ export default function EditBoardPage() {
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
           >
             {categories.map((cat) => (
-              <option key={cat.id} value={cat.name}>
+              <option key={cat.id} value={cat.id}>
                 {cat.name}
               </option>
             ))}

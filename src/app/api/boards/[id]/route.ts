@@ -11,7 +11,17 @@ export async function GET(
       return NextResponse.json({ message: '게시글 ID가 필요합니다.' }, { status: 400 });
     }
 
-    const apiResponse = await fetch(`https://front-mission.bigs.or.kr/boards/${id}`);
+    const accessToken = request.cookies.get('accessToken')?.value;
+
+    if (!accessToken) {
+      return NextResponse.json({ message: '인증되지 않은 사용자입니다.' }, { status: 401 });
+    }
+
+    const apiResponse = await fetch(`https://front-mission.bigs.or.kr/boards/${id}`, {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+      },
+    });
 
     if (!apiResponse.ok) {
       const errorData = await apiResponse.json();
