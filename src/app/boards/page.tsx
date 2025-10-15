@@ -96,7 +96,6 @@ export default function BoardsPage() {
               <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
               <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">카테고리</th>
               <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">제목</th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">작성자</th>
               <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">작성일</th>
             </tr>
           </thead>
@@ -110,7 +109,6 @@ export default function BoardsPage() {
                     {board.title}
                   </Link>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{board.writer.name}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(board.createdAt).toLocaleDateString()}</td>
               </tr>
             ))}
