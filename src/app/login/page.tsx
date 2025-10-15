@@ -4,6 +4,21 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUserStore } from '../store/userStore';
 
+function parseJwt(token: string) {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+  } catch (e) {
+    console.error("Error decoding JWT", e);
+    return null;
+  }
+}
+
 export default function LoginPage() {
   const router = useRouter();
   const [username, setUsername] = useState('');
@@ -37,12 +52,18 @@ export default function LoginPage() {
       
       const data = await res.json();
       
-      if (data.user && data.accessToken) {
-        setUser(data.user, data.accessToken);
+      if (data.accessToken) {
+        const tokenPayload = parseJwt(data.accessToken);
+        if (tokenPayload) {
+          const user = {
+            username: tokenPayload.username,
+            name: tokenPayload.name,
+          };
+          setUser(user, data.accessToken);
+        }
       }
 
       router.push('/');
-      router.refresh();
 
     } catch (err) {
       setError('예상치 못한 오류가 발생했습니다.');
