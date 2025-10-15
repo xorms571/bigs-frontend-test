@@ -15,6 +15,8 @@ interface Board {
   boardCategory: string;
 }
 
+const MAX_FILE_SIZE = 1024 * 1024; // 1MB
+
 export default function EditBoardPage() {
   const router = useRouter();
   const params = useParams();
@@ -51,9 +53,6 @@ export default function EditBoardPage() {
         setTitle(boardData.title);
         setContent(boardData.content);
 
-        console.log('EditBoardPage - boardData.boardCategory:', boardData.boardCategory);
-        console.log('EditBoardPage - categoriesArray:', categoriesArray);
-
         const initialCategory = categoriesArray.find(
           (cat) => cat.id === boardData.boardCategory
         );
@@ -80,6 +79,11 @@ export default function EditBoardPage() {
 
     if (!title || !content || !category) {
       setError('제목, 내용, 카테고리를 모두 입력해주세요.');
+      return;
+    }
+
+    if (file && file.size > MAX_FILE_SIZE) {
+      setError(`파일 크기가 너무 큽니다. 최대 ${MAX_FILE_SIZE / (1024 * 1024)}MB까지 업로드 가능합니다.`);
       return;
     }
 

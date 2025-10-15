@@ -10,14 +10,10 @@ interface Board {
   content: string;
   category: string;
   createdAt: string;
-  updatedAt: string;
-  writer: {
-    id: number;
-    username: string;
-    name: string;
-  };
-  fileUrl?: string;
+  imageUrl: string | null;
 }
+
+const EXTERNAL_API_BASE_URL = 'https://front-mission.bigs.or.kr';
 
 export default function BoardDetailPage() {
   const router = useRouter();
@@ -76,13 +72,15 @@ export default function BoardDetailPage() {
     return <div className="container mx-auto px-4 py-8">로딩 중...</div>;
   }
 
+  const fullImageUrl = board.imageUrl ? `${EXTERNAL_API_BASE_URL}${board.imageUrl}` : null;
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="bg-white shadow-md rounded-lg p-8">
         <div className="flex justify-between items-start mb-4">
           <div>
             <p className="text-sm text-gray-500">{board.category}</p>
-            <h1 className="text-3xl font-bold">{board.title}</h1>
+            <h1 className="text-3xl font-bold text-gray-500">{board.title}</h1>
           </div>
           <div className="text-right">
             <p className="text-sm text-gray-500">작성일: {new Date(board.createdAt).toLocaleString()}</p>
@@ -91,18 +89,13 @@ export default function BoardDetailPage() {
         
         <hr className="my-6" />
 
-        <div className="prose max-w-none">
+        {fullImageUrl && (
+          <img src={fullImageUrl} alt={`${board.id} img`} className="my-4 max-w-full h-auto" />
+        )}
+
+        <div className="prose max-w-none text-gray-500">
           <p style={{ whiteSpace: 'pre-wrap' }}>{board.content}</p>
         </div>
-
-        {board.fileUrl && (
-          <div className="mt-6">
-            <h3 className="text-lg font-semibold">첨부 파일</h3>
-            <a href={board.fileUrl} target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline">
-              {board.fileUrl.split('/').pop()}
-            </a>
-          </div>
-        )}
 
         <hr className="my-6" />
 
