@@ -8,6 +8,8 @@ interface Category {
   name: string;
 }
 
+const MAX_FILE_SIZE = 1024 * 1024; // 1MB
+
 export default function NewBoardPage() {
   const router = useRouter();
   const [categories, setCategories] = useState<Category[]>([]);
@@ -44,6 +46,11 @@ export default function NewBoardPage() {
 
     if (!title || !content || !category) {
       setError('제목, 내용, 카테고리를 모두 입력해주세요.');
+      return;
+    }
+
+    if (file && file.size > MAX_FILE_SIZE) {
+      setError(`파일 크기가 너무 큽니다. 최대 ${MAX_FILE_SIZE / (1024 * 1024)}MB까지 업로드 가능합니다.`);
       return;
     }
 

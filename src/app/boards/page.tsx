@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useUserStore } from '@/app/store/userStore'; // Import useUserStore
+import { useUserStore } from '@/app/store/userStore';
 
 interface Board {
   id: number;
