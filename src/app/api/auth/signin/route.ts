@@ -37,7 +37,7 @@ export async function POST(request: Request) {
         secure: process.env.NODE_ENV === 'production',
         path: '/',
         sameSite: 'strict',
-        maxAge: 60 * 2, // 2분
+        maxAge: 60 * 5, // 5분
       });
     }
 

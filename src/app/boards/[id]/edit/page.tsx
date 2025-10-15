@@ -51,8 +51,11 @@ export default function EditBoardPage() {
         setTitle(boardData.title);
         setContent(boardData.content);
 
+        console.log('EditBoardPage - boardData.boardCategory:', boardData.boardCategory);
+        console.log('EditBoardPage - categoriesArray:', categoriesArray);
+
         const initialCategory = categoriesArray.find(
-          (cat) => cat.name === boardData.boardCategory
+          (cat) => cat.id === boardData.boardCategory
         );
         if (initialCategory) {
           setCategory(initialCategory.id);
