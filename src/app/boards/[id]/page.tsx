@@ -25,8 +25,8 @@ export default function BoardDetailPage() {
           }
           const data = await res.json();
           setBoard(data);
-        } catch (err: any) {
-          setError(err.message);
+        } catch (err: unknown) {
+          setError((err as Error).message);
         }
       };
       fetchBoard();
@@ -50,9 +50,9 @@ export default function BoardDetailPage() {
 
       alert('게시글이 삭제되었습니다.');
       router.push('/boards');
-    } catch (err: any) {
-      setError(err.message);
-      alert(`오류: ${err.message}`);
+    } catch (err: unknown) {
+      setError((err as Error).message);
+      alert(`오류: ${(err as Error).message}`);
     }
   };
 

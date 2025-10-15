@@ -28,8 +28,8 @@ export default function NewBoardPage() {
           name: name as string,
         }));
         setCategories(categoriesArray);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        setError((err as Error).message);
       }
     };
 
@@ -74,8 +74,8 @@ export default function NewBoardPage() {
 
       const newPost = await res.json();
       router.push(`/boards/${newPost.id}`);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError((err as Error).message);
     }
   };
 

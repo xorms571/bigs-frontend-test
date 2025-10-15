@@ -30,8 +30,8 @@ export default function BoardsPage() {
         }
         const data = await res.json();
         setBoardsPage(data);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        setError((err as Error).message);
       }
     };
 

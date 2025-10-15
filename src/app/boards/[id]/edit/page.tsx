@@ -59,8 +59,8 @@ export default function EditBoardPage() {
           setCategory('');
         }
 
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        setError((err as Error).message);
       }
     };
 
@@ -106,8 +106,8 @@ export default function EditBoardPage() {
       }
 
       router.push(`/boards/${id}`);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError((err as Error).message);
     }
   };
 
