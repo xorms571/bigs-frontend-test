@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useUserStore } from '@/app/store/userStore';
 import { Page } from '../types/common';
 
-export default function BoardsPage() {
+function BoardsContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { accessToken } = useUserStore();
@@ -102,3 +102,11 @@ export default function BoardsPage() {
     </div>
   );
 }
+
+export default function BoardsPage() {
+  return (
+    <Suspense fallback={<div>Loading boards...</div>}>
+      <BoardsContent />
+    </Suspense>
+  );
+} 
