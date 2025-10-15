@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+interface RouteParams {
+  id: string;
+}
+
 export async function GET(
   request: NextRequest,
-  params: { params: { id: string } }
+  { params }: { params: RouteParams }
 ) {
   try {
-    const { id } = params.params;
+    const { id } = params;
 
     if (!id) {
       return NextResponse.json({ message: '게시글 ID가 필요합니다.' }, { status: 400 });
@@ -39,10 +43,10 @@ export async function GET(
 
 export async function PATCH(
   request: NextRequest,
-  params: { params: { id: string } }
+  { params }: { params: RouteParams }
 ) {
   try {
-    const { id } = params.params;
+    const { id } = params;
 
     if (!id) {
       return NextResponse.json({ message: '게시글 ID가 필요합니다.' }, { status: 400 });
@@ -103,10 +107,10 @@ export async function PATCH(
 
 export async function DELETE(
   request: NextRequest,
-  params: { params: { id: string } }
+  { params }: { params: RouteParams }
 ) {
   try {
-    const { id } = params.params;
+    const { id } = params;
 
     if (!id) {
       return NextResponse.json({ message: '게시글 ID가 필요합니다.' }, { status: 400 });
