@@ -1,5 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const { id } = params;
+
+    if (!id) {
+      return NextResponse.json({ message: '게시글 ID가 필요합니다.' }, { status: 400 });
+    }
+
+    const apiResponse = await fetch(`https://front-mission.bigs.or.kr/boards/${id}`);
+
+    if (!apiResponse.ok) {
+      const errorData = await apiResponse.json();
+      return NextResponse.json({ message: errorData.message || '글 조회에 실패했습니다.' }, { status: apiResponse.status });
+    }
+
+    const data = await apiResponse.json();
+    return NextResponse.json(data, { status: apiResponse.status });
+
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ message: '예상치 못한 오류가 발생했습니다.' }, { status: 500 });
+  }
+}
+
 export async function PATCH(
   request: NextRequest,
   { params }: { params: { id: string } }
