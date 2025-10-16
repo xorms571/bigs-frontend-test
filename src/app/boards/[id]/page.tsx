@@ -7,6 +7,9 @@ import { useUserStore } from '@/store/userStore';
 import { Board } from '@/types/common';
 import { fetchWithTokenRefresh } from '@/utils/api';
 import { useHydration } from '@/hooks/useHydration';
+import Container from '@/components/Container';
+import Button from '@/components/Button';
+import Title from '@/components/Title';
 
 const EXTERNAL_API_BASE_URL = process.env.NEXT_PUBLIC_EXTERNAL_API_BASE_URL;
 
@@ -81,45 +84,42 @@ export default function BoardDetailPage() {
   const fullImageUrl = board.imageUrl ? `${EXTERNAL_API_BASE_URL}${board.imageUrl}` : null;
 
   return (
-    <div className="w-full">
-      <div className="bg-white shadow-md rounded-lg p-8">
-        <div className="flex justify-between items-start mb-4">
-          <div>
-            <p className="text-sm text-gray-500">{board.category}</p>
-            <h1 className="text-3xl font-bold text-gray-500">{board.title}</h1>
-          </div>
-          <div className="text-right">
-            <p className="text-sm text-gray-500">작성일: {new Date(board.createdAt).toLocaleString()}</p>
-          </div>
+    <Container className='min-h-96'>
+      <div className="flex flex-col sm:flex-row justify-between items-start mb-4">
+        <div>
+          <p className="text-sm text-gray-500">카테고리: {board.boardCategory}</p>
+          <Title>{board.title}</Title>
         </div>
+        <div className="text-right">
+          <p className="text-sm text-gray-500">작성일: {new Date(board.createdAt).toLocaleString()}</p>
+        </div>
+      </div>
 
-        <hr className="my-6" />
+      <hr className="my-6 text-gray-300" />
 
+      <div className="prose max-w-none text-gray-500 min-h-96">
         {fullImageUrl && (
           <img src={fullImageUrl} alt={`${board.id} img`} className="my-4 max-w-full h-auto" />
         )}
-
-        <div className="prose max-w-none text-gray-500">
-          <p style={{ whiteSpace: 'pre-wrap' }}>{board.content}</p>
-        </div>
-
-        <hr className="my-6" />
-
-        <div className="flex justify-end space-x-4">
-          <Link href="/boards" className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
-            목록으로
-          </Link>
-          <Link href={`/boards/${id}/edit`} className="px-4 py-2 text-sm font-medium text-white bg-yellow-500 rounded-md hover:bg-yellow-600">
-            수정
-          </Link>
-          <button
-            onClick={handleDelete}
-            className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700"
-          >
-            삭제
-          </button>
-        </div>
+        <p style={{ whiteSpace: 'pre-wrap' }}>{board.content}</p>
       </div>
-    </div>
+
+      <hr className="my-6 text-gray-300" />
+
+      <div className="flex justify-end space-x-4">
+        <Button onClick={() => router.push('/boards')} variant='secondary'>
+          목록으로
+        </Button>
+        <Button onClick={() => router.push(`/boards/${id}/edit`)}>
+          수정
+        </Button>
+        <Button
+          onClick={handleDelete}
+          variant='danger'
+        >
+          삭제
+        </Button>
+      </div>
+    </Container>
   );
 }

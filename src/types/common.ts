@@ -7,13 +7,20 @@ export interface Board {
   id: number;
   title: string;
   content: string;
-  category: string;
+  boardCategory: string;
   createdAt: string;
   imageUrl: string | null;
 }
 
+export interface Content {
+  id: number;
+  title: string;
+  category: string;
+  createdAt: string;
+}
+
 export interface Page {
-  content: Board[];
+  content: Content[];
   pageable: {
     pageNumber: number;
     pageSize: number;

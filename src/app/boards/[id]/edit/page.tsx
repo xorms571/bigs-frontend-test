@@ -6,6 +6,9 @@ import { useUserStore } from '@/store/userStore';
 import { fetchWithTokenRefresh } from '@/utils/api';
 import { Category } from '@/types/common';
 import { useHydration } from '@/hooks/useHydration';
+import Container from '@/components/Container';
+import Button from '@/components/Button';
+import Title from '@/components/Title';
 
 interface Board {
   id: number;
@@ -134,8 +137,8 @@ export default function EditBoardPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">글 수정</h1>
+    <Container>
+      <Title className='mb-2'>글 수정</Title>
       <form onSubmit={handleSubmit} className="bg-white shadow-md rounded-lg p-6">
         {error && <p className="text-red-600 mb-4">{error}</p>}
         <div className="mb-4">
@@ -182,22 +185,21 @@ export default function EditBoardPage() {
             className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100"
           />
         </div>
-        <div className="flex justify-end">
-          <button
+        <div className="flex justify-end gap-2">
+          <Button
             type="button"
             onClick={() => router.push(`/boards/${id}`)}
-            className="px-4 py-2 mr-2 font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
+            variant='secondary'
           >
             취소
-          </button>
-          <button
+          </Button>
+          <Button
             type="submit"
-            className="px-4 py-2 font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700"
           >
             수정
-          </button>
+          </Button>
         </div>
       </form>
-    </div>
+    </Container>
   );
 }
