@@ -1,8 +1,8 @@
 'use client';
 
+import { useUserStore } from '@/store/userStore';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useUserStore } from '../store/userStore';
 
 export default function Header() {
   const router = useRouter();

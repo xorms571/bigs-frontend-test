@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { Board } from '../../types/common'
 import Link from 'next/link';
-import { fetchWithTokenRefresh } from '../../utils/api'; // Import the new utility function
-import { useUserStore } from '../../store/userStore'; // Ensure useUserStore is imported
+import { useUserStore } from '@/store/userStore';
+import { Board } from '@/types/common';
+import { fetchWithTokenRefresh } from '@/utils/api';
 
 const EXTERNAL_API_BASE_URL = process.env.NEXT_PUBLIC_EXTERNAL_API_BASE_URL;
 

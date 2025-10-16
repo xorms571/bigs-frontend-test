@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Category } from '../../types/common';
-import { fetchWithTokenRefresh } from '../../utils/api'; // Import the new utility function
-import { useUserStore } from '../../store/userStore'; // Ensure useUserStore is imported
+import { useUserStore } from '@/store/userStore';
+import { Category } from '@/types/common';
+import { fetchWithTokenRefresh } from '@/utils/api';
 
 const MAX_FILE_SIZE = 1024 * 1024; // 1MB
 

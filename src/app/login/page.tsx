@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useUserStore } from '../store/userStore';
+import { useUserStore } from '@/store/userStore';
 
 function parseJwt(token: string) {
   try {

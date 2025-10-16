@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { Category } from '../../../types/common';
-import { useUserStore } from '@/app/store/userStore';
-import { fetchWithTokenRefresh } from '@/app/utils/api';
+import { useUserStore } from '@/store/userStore';
+import { fetchWithTokenRefresh } from '@/utils/api';
+import { Category } from '@/types/common';
 
 interface Board {
   id: number;

@@ -3,27 +3,27 @@
 import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useUserStore } from '../store/userStore';
-import { Page } from '../types/common';
-import { fetchWithTokenRefresh } from '../utils/api'; // Import the new utility function
+import { useUserStore } from '@/store/userStore';
+import { Page } from '@/types/common';
+import { fetchWithTokenRefresh } from '@/utils/api';
 
 function BoardsContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { accessToken } = useUserStore(); // Only accessToken is needed here for initial header
+  const { accessToken } = useUserStore();
   const [boardsPage, setBoardsPage] = useState<Page | null>(null);
   const [error, setError] = useState('');
-  const [hydrated, setHydrated] = useState(false); // New state for hydration
+  const [hydrated, setHydrated] = useState(false);
 
   const page = searchParams.get('page') ?? '0';
   const size = searchParams.get('size') ?? '10';
 
   useEffect(() => {
-    setHydrated(true); // Mark as hydrated after first client-side render
+    setHydrated(true); // 첫 클라이언트 측 렌더링 후 하이드레이션 완료로 표시
   }, []);
 
   useEffect(() => {
-    if (!hydrated) return; // Wait until component is hydrated
+    if (!hydrated) return; // 컴포넌트가 하이드레이션될 때까지 기다립니다.
 
     const fetchBoards = async () => {
       try {
@@ -45,7 +45,7 @@ function BoardsContent() {
     };
 
     fetchBoards();
-  }, [page, size, accessToken, router, hydrated]); // Removed clearUser, setUser from dependencies
+  }, [page, size, accessToken, router, hydrated]);
 
   const handlePageChange = (newPage: number) => {
     router.push(`/boards?page=${newPage}&size=${size}`);
