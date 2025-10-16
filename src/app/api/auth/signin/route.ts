@@ -30,7 +30,7 @@ export async function POST(request: Request) {
         secure: process.env.NODE_ENV === 'production',
         path: '/',
         sameSite: 'strict',
-        maxAge: 60 * 60, // 1 hour
+        maxAge: 10, // 토큰 갱신 테스트 10초
       });
       response.cookies.set('refreshToken', data.refreshToken, {
         httpOnly: true,

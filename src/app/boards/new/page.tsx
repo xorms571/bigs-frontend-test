@@ -3,11 +3,14 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Category } from '../../types/common';
+import { fetchWithTokenRefresh } from '../../utils/api'; // Import the new utility function
+import { useUserStore } from '../../store/userStore'; // Ensure useUserStore is imported
 
 const MAX_FILE_SIZE = 1024 * 1024; // 1MB
 
 export default function NewBoardPage() {
   const router = useRouter();
+  const { accessToken } = useUserStore();
   const [categories, setCategories] = useState<Category[]>([]);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -18,7 +21,11 @@ export default function NewBoardPage() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const catRes = await fetch('/api/boards/categories');
+        const catRes = await fetchWithTokenRefresh('/api/boards/categories', {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }, router);
         if (!catRes.ok) {
           throw new Error('카테고리를 불러오는 데 실패했습니다.');
         }
@@ -34,7 +41,7 @@ export default function NewBoardPage() {
     };
 
     fetchCategories();
-  }, []);
+  }, [accessToken, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,10 +69,13 @@ export default function NewBoardPage() {
         formData.append('file', file);
       }
 
-      const res = await fetch('/api/boards', {
+      const res = await fetchWithTokenRefresh('/api/boards', {
         method: 'POST',
         body: formData,
-      });
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }, router);
 
       if (!res.ok) {
         const errorData = await res.json();

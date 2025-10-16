@@ -3,31 +3,40 @@
 import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useUserStore } from '@/app/store/userStore';
+import { useUserStore } from '../store/userStore';
 import { Page } from '../types/common';
+import { fetchWithTokenRefresh } from '../utils/api'; // Import the new utility function
 
 function BoardsContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { accessToken } = useUserStore();
+  const { accessToken } = useUserStore(); // Only accessToken is needed here for initial header
   const [boardsPage, setBoardsPage] = useState<Page | null>(null);
   const [error, setError] = useState('');
+  const [hydrated, setHydrated] = useState(false); // New state for hydration
 
   const page = searchParams.get('page') ?? '0';
   const size = searchParams.get('size') ?? '10';
 
   useEffect(() => {
-    if (!accessToken) {
-      router.push('/login');
-      return;
-    }
+    setHydrated(true); // Mark as hydrated after first client-side render
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated) return; // Wait until component is hydrated
 
     const fetchBoards = async () => {
       try {
-        const res = await fetch(`/api/boards?page=${page}&size=${size}`);
+        const res = await fetchWithTokenRefresh(`/api/boards?page=${page}&size=${size}`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }, router);
+
         if (!res.ok) {
           throw new Error('게시글 목록을 불러오는 데 실패했습니다.');
         }
+
         const data = await res.json();
         setBoardsPage(data);
       } catch (err: unknown) {
@@ -36,7 +45,7 @@ function BoardsContent() {
     };
 
     fetchBoards();
-  }, [page, size, accessToken, router]);
+  }, [page, size, accessToken, router, hydrated]); // Removed clearUser, setUser from dependencies
 
   const handlePageChange = (newPage: number) => {
     router.push(`/boards?page=${newPage}&size=${size}`);
@@ -79,25 +88,26 @@ function BoardsContent() {
         </table>
       </div>
 
-      {boardsPage && (<div className="flex items-center justify-between mt-6">
-        <button
-          onClick={() => handlePageChange(boardsPage.number - 1)}
-          disabled={boardsPage.first}
-          className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          이전
-        </button>
-        <span className="text-sm text-gray-700">
-          Page {boardsPage.number + 1} of {boardsPage.totalPages}
-        </span>
-        <button
-          onClick={() => handlePageChange(boardsPage.number + 1)}
-          disabled={boardsPage.last}
-          className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          다음
-        </button>
-      </div>
+      {boardsPage && (
+        <div className="flex items-center justify-between mt-6">
+          <button
+            onClick={() => handlePageChange(boardsPage.number - 1)}
+            disabled={boardsPage.first}
+            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            이전
+          </button>
+          <span className="text-sm text-gray-700">
+            Page {boardsPage.number + 1} of {boardsPage.totalPages}
+          </span>
+          <button
+            onClick={() => handlePageChange(boardsPage.number + 1)}
+            disabled={boardsPage.last}
+            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            다음
+          </button>
+        </div>
       )}
     </div>
   );
@@ -109,4 +119,4 @@ export default function BoardsPage() {
       <BoardsContent />
     </Suspense>
   );
-} 
+}

@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Board } from '../../types/common'
 import Link from 'next/link';
+import { fetchWithTokenRefresh } from '../../utils/api'; // Import the new utility function
+import { useUserStore } from '../../store/userStore'; // Ensure useUserStore is imported
 
 const EXTERNAL_API_BASE_URL = process.env.NEXT_PUBLIC_EXTERNAL_API_BASE_URL;
 
@@ -11,6 +13,7 @@ export default function BoardDetailPage() {
   const router = useRouter();
   const params = useParams();
   const id = params.id as string;
+  const { accessToken } = useUserStore();
 
   const [board, setBoard] = useState<Board | null>(null);
   const [error, setError] = useState('');
@@ -19,7 +22,11 @@ export default function BoardDetailPage() {
     if (id) {
       const fetchBoard = async () => {
         try {
-          const res = await fetch(`/api/boards/${id}`);
+          const res = await fetchWithTokenRefresh(`/api/boards/${id}`, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }, router);
           if (!res.ok) {
             throw new Error('게시글을 불러오는 데 실패했습니다.');
           }
@@ -31,7 +38,7 @@ export default function BoardDetailPage() {
       };
       fetchBoard();
     }
-  }, [id]);
+  }, [id, accessToken, router]);
 
   const handleDelete = async () => {
     if (!confirm('정말로 이 게시글을 삭제하시겠습니까?')) {
@@ -39,9 +46,12 @@ export default function BoardDetailPage() {
     }
 
     try {
-      const res = await fetch(`/api/boards/${id}`, {
+      const res = await fetchWithTokenRefresh(`/api/boards/${id}`, {
         method: 'DELETE',
-      });
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }, router);
 
       if (!res.ok) {
         const data = await res.json();

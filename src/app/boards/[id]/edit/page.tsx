@@ -2,7 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { Category } from '../../../types/common'
+import { Category } from '../../../types/common';
+import { useUserStore } from '@/app/store/userStore';
+import { fetchWithTokenRefresh } from '@/app/utils/api';
 
 interface Board {
   id: number;
@@ -17,6 +19,7 @@ export default function EditBoardPage() {
   const router = useRouter();
   const params = useParams();
   const id = params.id as string;
+  const { accessToken } = useUserStore();
 
   const [board, setBoard] = useState<Board | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -29,7 +32,11 @@ export default function EditBoardPage() {
   useEffect(() => {
     const fetchBoardAndCategories = async () => {
       try {
-        const catRes = await fetch('/api/boards/categories');
+        const catRes = await fetchWithTokenRefresh('/api/boards/categories', {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }, router);
         if (!catRes.ok) {
           throw new Error('카테고리를 불러오는 데 실패했습니다.');
         }
@@ -40,7 +47,11 @@ export default function EditBoardPage() {
         }));
         setCategories(categoriesArray);
 
-        const boardRes = await fetch(`/api/boards/${id}`);
+        const boardRes = await fetchWithTokenRefresh(`/api/boards/${id}`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }, router);
         if (!boardRes.ok) {
           throw new Error('게시글 정보를 불러오는 데 실패했습니다.');
         }
@@ -67,7 +78,7 @@ export default function EditBoardPage() {
     if (id) {
       fetchBoardAndCategories();
     }
-  }, [id]);
+  }, [id, accessToken, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -95,10 +106,13 @@ export default function EditBoardPage() {
         formData.append('file', file);
       }
 
-      const res = await fetch(`/api/boards/${id}`, {
+      const res = await fetchWithTokenRefresh(`/api/boards/${id}`, {
         method: 'PATCH',
         body: formData,
-      });
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }, router);
 
       if (!res.ok) {
         const errorData = await res.json();

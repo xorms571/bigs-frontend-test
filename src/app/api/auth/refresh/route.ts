@@ -25,14 +25,17 @@ export async function POST(request: NextRequest) {
     const { accessToken, refreshToken: newRefreshToken } = data;
 
     if (accessToken && newRefreshToken) {
-      const response = NextResponse.json({ message: '토큰이 성공적으로 갱신되었습니다.' }, { status: 200 });
+      const response = NextResponse.json({
+        message: '토큰이 성공적으로 갱신되었습니다.',
+        accessToken: accessToken, // 토큰 교체
+      }, { status: 200 });
 
       response.cookies.set('accessToken', accessToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         path: '/',
         sameSite: 'strict',
-        maxAge: 60 * 60, // 1 hour
+        maxAge: 10, // 토큰 갱신 테스트 10초
       });
 
       response.cookies.set('refreshToken', newRefreshToken, {
