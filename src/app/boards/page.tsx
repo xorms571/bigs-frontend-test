@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useUserStore } from '@/store/userStore';
 import { Page } from '@/types/common';
 import { fetchWithTokenRefresh } from '@/utils/api';
-import { useHydration } from '../hooks/useHydration';
+import { useHydration } from '../../hooks/useHydration';
 
 function BoardsContent() {
   const router = useRouter();

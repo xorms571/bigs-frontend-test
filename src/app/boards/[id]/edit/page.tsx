@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useUserStore } from '@/store/userStore';
 import { fetchWithTokenRefresh } from '@/utils/api';
 import { Category } from '@/types/common';
-import { useHydration } from '@/app/hooks/useHydration';
+import { useHydration } from '@/hooks/useHydration';
 
 interface Board {
   id: number;

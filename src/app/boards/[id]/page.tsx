@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useUserStore } from '@/store/userStore';
 import { Board } from '@/types/common';
 import { fetchWithTokenRefresh } from '@/utils/api';
-import { useHydration } from '@/app/hooks/useHydration';
+import { useHydration } from '@/hooks/useHydration';
 
 const EXTERNAL_API_BASE_URL = process.env.NEXT_PUBLIC_EXTERNAL_API_BASE_URL;
 

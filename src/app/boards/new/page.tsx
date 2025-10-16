@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useUserStore } from '@/store/userStore';
 import { Category } from '@/types/common';
 import { fetchWithTokenRefresh } from '@/utils/api';
-import { useHydration } from '@/app/hooks/useHydration';
+import { useHydration } from '@/hooks/useHydration';
 
 const MAX_FILE_SIZE = 1024 * 1024; // 1MB
 
