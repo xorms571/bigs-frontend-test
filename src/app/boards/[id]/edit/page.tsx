@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useUserStore } from '@/store/userStore';
 import { fetchWithTokenRefresh } from '@/utils/api';
 import { Category } from '@/types/common';
+import { useHydration } from '@/app/hooks/useHydration';
 
 interface Board {
   id: number;
@@ -28,8 +29,11 @@ export default function EditBoardPage() {
   const [category, setCategory] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState('');
+  const hydrated = useHydration();
 
   useEffect(() => {
+    if (!hydrated) return;
+
     const fetchBoardAndCategories = async () => {
       try {
         const catRes = await fetchWithTokenRefresh('/api/boards/categories', {
@@ -78,7 +82,7 @@ export default function EditBoardPage() {
     if (id) {
       fetchBoardAndCategories();
     }
-  }, [id, accessToken, router]);
+  }, [id, accessToken, router, hydrated]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useUserStore } from '@/store/userStore';
 import { Board } from '@/types/common';
 import { fetchWithTokenRefresh } from '@/utils/api';
+import { useHydration } from '@/app/hooks/useHydration';
 
 const EXTERNAL_API_BASE_URL = process.env.NEXT_PUBLIC_EXTERNAL_API_BASE_URL;
 
@@ -17,8 +18,11 @@ export default function BoardDetailPage() {
 
   const [board, setBoard] = useState<Board | null>(null);
   const [error, setError] = useState('');
+  const hydrated = useHydration();
 
   useEffect(() => {
+    if (!hydrated) return;
+
     if (id) {
       const fetchBoard = async () => {
         try {
@@ -38,7 +42,7 @@ export default function BoardDetailPage() {
       };
       fetchBoard();
     }
-  }, [id, accessToken, router]);
+  }, [id, accessToken, router, hydrated]);
 
   const handleDelete = async () => {
     if (!confirm('정말로 이 게시글을 삭제하시겠습니까?')) {

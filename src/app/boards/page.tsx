@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useUserStore } from '@/store/userStore';
 import { Page } from '@/types/common';
 import { fetchWithTokenRefresh } from '@/utils/api';
+import { useHydration } from '../hooks/useHydration';
 
 function BoardsContent() {
   const router = useRouter();
@@ -13,17 +14,13 @@ function BoardsContent() {
   const { accessToken } = useUserStore();
   const [boardsPage, setBoardsPage] = useState<Page | null>(null);
   const [error, setError] = useState('');
-  const [hydrated, setHydrated] = useState(false);
+  const hydrated = useHydration();
 
   const page = searchParams.get('page') ?? '0';
   const size = searchParams.get('size') ?? '10';
 
   useEffect(() => {
-    setHydrated(true); // 첫 클라이언트 측 렌더링 후 하이드레이션 완료로 표시
-  }, []);
-
-  useEffect(() => {
-    if (!hydrated) return; // 컴포넌트가 하이드레이션될 때까지 기다립니다.
+    if (!hydrated) return;
 
     const fetchBoards = async () => {
       try {
