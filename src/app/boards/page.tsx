@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useUserStore } from '@/store/userStore';
 import { Page } from '@/types/common';
 import { fetchWithTokenRefresh } from '@/utils/api';
 import { useHydration } from '@/hooks/useHydration';
@@ -14,7 +13,7 @@ import Title from '@/components/Title';
 function BoardsContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { accessToken } = useUserStore();
+
   const [boardsPage, setBoardsPage] = useState<Page | null>(null);
   const [error, setError] = useState('');
   const hydrated = useHydration();
@@ -27,11 +26,7 @@ function BoardsContent() {
 
     const fetchBoards = async () => {
       try {
-        const res = await fetchWithTokenRefresh(`/api/boards?page=${page}&size=${size}`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }, router);
+        const res = await fetchWithTokenRefresh(`/api/boards?page=${page}&size=${size}`, {}, router);
 
         if (!res.ok) {
           throw new Error('게시글 목록을 불러오는 데 실패했습니다.');
@@ -45,7 +40,7 @@ function BoardsContent() {
     };
 
     fetchBoards();
-  }, [page, size, accessToken, router, hydrated]);
+  }, [page, size, router, hydrated]);
 
   const handlePageChange = (newPage: number) => {
     router.push(`/boards?page=${newPage}&size=${size}`);

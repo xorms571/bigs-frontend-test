@@ -27,7 +27,6 @@ export async function POST(request: NextRequest) {
     if (accessToken && newRefreshToken) {
       const response = NextResponse.json({
         message: '토큰이 성공적으로 갱신되었습니다.',
-        accessToken: accessToken, // 토큰 교체
       }, { status: 200 });
 
       response.cookies.set('accessToken', accessToken, {

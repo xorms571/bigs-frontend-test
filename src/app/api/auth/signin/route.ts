@@ -1,5 +1,18 @@
 import { NextResponse } from 'next/server';
 
+// 서버 측에서 JWT를 해석하는 헬퍼 함수
+function parseJwt(token: string) {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = Buffer.from(base64, 'base64').toString('utf8');
+    return JSON.parse(jsonPayload);
+  } catch (e) {
+    console.error("Error decoding JWT in API route", e);
+    return null;
+  }
+}
+
 export async function POST(request: Request) {
   try {
     const { username, password } = await request.json();
@@ -22,17 +35,33 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: data.message || '로그인에 실패했습니다.' }, { status: apiResponse.status });
     }
 
-    const response = NextResponse.json(data, { status: apiResponse.status });
+    const { accessToken, refreshToken } = data;
 
-    if (data.accessToken && data.refreshToken) {
-      response.cookies.set('accessToken', data.accessToken, {
+    let user = {};
+    // 토큰을 해석하여 사용자 정보 추출
+    if (accessToken) {
+      const tokenPayload = parseJwt(accessToken);
+      if (tokenPayload) {
+        user = {
+          username: tokenPayload.username,
+          name: tokenPayload.name,
+        };
+      }
+    }
+
+    // 사용자 정보 객체를 본문에 담아 응답 생성
+    const response = NextResponse.json(user, { status: apiResponse.status });
+
+    // 토큰은 HttpOnly 쿠키에 설정
+    if (accessToken && refreshToken) {
+      response.cookies.set('accessToken', accessToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         path: '/',
         sameSite: 'strict',
         maxAge: 10, // 토큰 갱신 테스트 10초
       });
-      response.cookies.set('refreshToken', data.refreshToken, {
+      response.cookies.set('refreshToken', refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         path: '/',
