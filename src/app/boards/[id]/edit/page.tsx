@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { useUserStore } from '@/store/userStore';
 import { fetchWithTokenRefresh } from '@/utils/api';
 import { Category } from '@/types/common';
 import { useHydration } from '@/hooks/useHydration';
@@ -23,7 +22,6 @@ export default function EditBoardPage() {
   const router = useRouter();
   const params = useParams();
   const id = params.id as string;
-  const { accessToken } = useUserStore();
 
   const [board, setBoard] = useState<Board | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -39,11 +37,7 @@ export default function EditBoardPage() {
 
     const fetchBoardAndCategories = async () => {
       try {
-        const catRes = await fetchWithTokenRefresh('/api/boards/categories', {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }, router);
+        const catRes = await fetchWithTokenRefresh('/api/boards/categories', {}, router);
         if (!catRes.ok) {
           throw new Error('카테고리를 불러오는 데 실패했습니다.');
         }
@@ -54,11 +48,7 @@ export default function EditBoardPage() {
         }));
         setCategories(categoriesArray);
 
-        const boardRes = await fetchWithTokenRefresh(`/api/boards/${id}`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }, router);
+        const boardRes = await fetchWithTokenRefresh(`/api/boards/${id}`, {}, router);
         if (!boardRes.ok) {
           throw new Error('게시글 정보를 불러오는 데 실패했습니다.');
         }
@@ -85,7 +75,7 @@ export default function EditBoardPage() {
     if (id) {
       fetchBoardAndCategories();
     }
-  }, [id, accessToken, router, hydrated]);
+  }, [id, router, hydrated]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -116,9 +106,6 @@ export default function EditBoardPage() {
       const res = await fetchWithTokenRefresh(`/api/boards/${id}`, {
         method: 'PATCH',
         body: formData,
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
       }, router);
 
       if (!res.ok) {
