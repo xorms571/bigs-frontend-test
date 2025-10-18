@@ -22,23 +22,6 @@ export default function SignupPage() {
       return;
     }
 
-    const EMAIL_REGEX = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-    if (!EMAIL_REGEX.test(username)) {
-      setError('이메일 형식이 올바르지 않습니다.');
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      setError('비밀번호가 일치하지 않습니다.');
-      return;
-    }
-
-    const PASSWORD_REGEX = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!%*#?&])[A-Za-z\d!%*#?&]{8,}$/;
-    if (!PASSWORD_REGEX.test(password)) {
-      setError('비밀번호는 8자 이상이어야 하며, 영문자, 숫자, 특수문자(!%*#?&)를 각각 하나 이상 포함해야 합니다.');
-      return;
-    }
-
     try {
       const res = await fetch('/api/auth/signup', {
         method: 'POST',
