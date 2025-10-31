@@ -1,4 +1,4 @@
-import BoardForm from '@/app/boards/BoardForm';
+import BoardForm from '@/app/boards/components/BoardForm';
 import Container from '@/components/Container';
 import Title from '@/components/Title';
 import { Suspense } from 'react';

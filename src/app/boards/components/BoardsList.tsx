@@ -8,8 +8,8 @@ import { Page } from '@/types/common';
 import Container from '@/components/Container';
 import Button from '@/components/Button';
 import Title from '@/components/Title';
-import BoardTable from '@/app/boards/BoardTable';
-import Pagination from '@/app/boards/Pagination';
+import BoardTable from '@/app/boards/components/BoardTable';
+import Pagination from '@/app/boards/components/Pagination';
 
 type Status = 'loading' | 'error' | 'success';
 

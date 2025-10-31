@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import BoardsList from '@/app/boards/BoardsList';
+import BoardsList from '@/app/boards/components/BoardsList';
 
 export default function BoardsPage() {
   return (
