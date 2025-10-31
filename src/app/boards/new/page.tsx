@@ -26,15 +26,6 @@ async function getCategories(): Promise<Category[] | null> {
 export default async function NewBoardPage() {
   const initialCategories = await getCategories();
 
-  if (!initialCategories) {
-    return (
-      <Container>
-        <Title>오류</Title>
-        <p>카테고리 정보를 불러오는 데 실패했습니다.</p>
-      </Container>
-    );
-  }
-
   return (
     <Suspense fallback={<div>페이지 로딩 중...</div>}>
       <Container>
