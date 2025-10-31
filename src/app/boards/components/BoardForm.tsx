@@ -40,11 +40,11 @@ export default function BoardForm({
 
   useEffect(() => {
     if (!hydrated) return;
-    // Fallback: If server fails to provide data, fetch on the client.
+    // 폴백: 서버에서 데이터 제공에 실패한 경우, 클라이언트에서 데이터를 조회합니다.
     if (!initialData || !initialCategories) {
       const fetchData = async () => {
         try {
-          // Fetch categories if not provided
+          // 카테고리가 제공되지 않은 경우 조회
           if (!initialCategories) {
             const catRes = await fetchWithTokenRefresh('/api/boards/categories', {}, router);
             if (!catRes.ok) throw new Error('카테고리를 불러오는 데 실패했습니다.');
@@ -53,7 +53,7 @@ export default function BoardForm({
             setCategories(categoriesArray);
           }
 
-          // Fetch board details in edit mode if not provided
+          // 수정 모드에서 게시글 상세 정보가 제공되지 않은 경우 조회
           if (isEditMode && boardId && !initialData) {
             const boardRes = await fetchWithTokenRefresh(`/api/boards/${boardId}`, {}, router);
             if (!boardRes.ok) throw new Error('게시글 정보를 불러오는 데 실패했습니다.');
