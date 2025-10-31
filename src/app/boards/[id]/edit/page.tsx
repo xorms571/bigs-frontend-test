@@ -48,15 +48,6 @@ export default async function EditBoardPage({ params }: { params: Promise<{ id: 
     getCategories(),
   ]);
 
-  if (!initialData || !initialCategories) {
-    return (
-      <Container>
-        <Title>오류</Title>
-        <p>게시글 또는 카테고리 정보를 불러오는 데 실패했습니다.</p>
-      </Container>
-    );
-  }
-
   return (
     <Suspense fallback={<div>페이지 로딩 중...</div>}>
       <Container>

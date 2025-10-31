@@ -4,44 +4,48 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Board } from '@/types/common';
 import { fetchWithTokenRefresh } from '@/utils/api';
+import { useHydration } from '@/hooks/useHydration';
 import Button from '@/components/Button';
 import Title from '@/components/Title';
-import { useHydration } from '@/hooks/useHydration';
 
 interface BoardDetailProps {
   boardId: string;
   apiBaseUrl: string | undefined;
+  initialData?: Board | null;
 }
 
-export default function BoardDetail({ boardId, apiBaseUrl }: BoardDetailProps) {
+export default function BoardDetail({ boardId, apiBaseUrl, initialData }: BoardDetailProps) {
   const router = useRouter();
   const hydrated = useHydration();
 
-  const [board, setBoard] = useState<Board | null>(null);
+  // prop으로부터 상태 초기화
+  const [board, setBoard] = useState<Board | null>(initialData || null);
   const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
+  // 초기 데이터 유무에 따라 로딩 상태 설정
+  const [isLoading, setIsLoading] = useState(!initialData);
 
   useEffect(() => {
     if (!hydrated) return;
-    if (!boardId) return;
-
-    const fetchBoard = async () => {
-      setIsLoading(true);
-      try {
-        const res = await fetchWithTokenRefresh(`/api/boards/${boardId}`, {}, router);
-        if (!res.ok) {
-          throw new Error('게시글을 불러오는 데 실패했습니다.');
+    // 폴백: 서버에서 데이터 제공에 실패한 경우, 클라이언트에서 데이터를 조회합니다.
+    if (!initialData && boardId) {
+      const fetchBoard = async () => {
+        setIsLoading(true);
+        try {
+          const res = await fetchWithTokenRefresh(`/api/boards/${boardId}`, {}, router);
+          if (!res.ok) {
+            throw new Error('게시글을 불러오는 데 실패했습니다.');
+          }
+          const data = await res.json();
+          setBoard(data);
+        } catch (err: unknown) {
+          setError((err as Error).message);
+        } finally {
+          setIsLoading(false);
         }
-        const data = await res.json();
-        setBoard(data);
-      } catch (err: unknown) {
-        setError((err as Error).message);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchBoard();
-  }, [boardId, router, hydrated]);
+      };
+      fetchBoard();
+    }
+  }, [boardId, router, initialData, hydrated]);
 
   const handleDelete = async () => {
     if (!board) return;
