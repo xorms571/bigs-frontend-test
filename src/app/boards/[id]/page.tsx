@@ -1,4 +1,4 @@
-import BoardDetail from '@/components/BoardDetail';
+import BoardDetail from '@/app/boards/components/BoardDetail';
 import Container from '@/components/Container';
 import { Suspense } from 'react';
 
