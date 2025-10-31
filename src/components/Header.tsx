@@ -18,7 +18,7 @@ export default function Header() {
 
   return (
     <header className="bg-white shadow-md fixed w-full top-0 z-10">
-      <nav className="mx-auto px-6 py-4 flex justify-between items-center">
+      <nav className="w-full sm:max-w-3xl mx-auto px-6 md:px-0 py-4 flex justify-between items-center">
         <Link href="/" className="text-xl font-bold text-gray-800 hover:text-gray-900">
           My Board
         </Link>
